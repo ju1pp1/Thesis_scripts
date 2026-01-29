@@ -30,7 +30,7 @@ public class BT_Flee : BTNodeWithLifecycle
             return BTStatus.Running;
         }
 
-        // Don’t spam SetDestination every frame
+        // Don't spam SetDestination every frame
         if (Time.time < _nextRepathTime)
             return BTStatus.Running;
 

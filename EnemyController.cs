@@ -21,8 +21,7 @@ public class EnemyController : MonoBehaviour
     public float meleeStopRange = 2.0f;
     public float rangedStopRange = 9.0f;
     public float casterStopRange = 10.0f;
-    //[SerializeField] GameObject casterExplosionPrefab;
-    //[SerializeField] float casterExplosionRadius = 2f;
+    
     [Header("Movement")]
     public float faceTurnSpeed = 5f;
 
@@ -33,11 +32,7 @@ public class EnemyController : MonoBehaviour
     private Transform currentTarget;
 
     private float nextAttackTime;
-    /*[Header("Ranged Settings")]
-    public bool isUsingRangedAttack = false;
-    public float rangedAttackRange = 10f;
-    public float fireRate = 1f;
-    private float nextFireTime = 0f;*/
+
     private EnemySkillCaster _skillCaster;
 
     EnemyBlackboard bb;
@@ -60,13 +55,11 @@ public class EnemyController : MonoBehaviour
 
         if (CompareTag("RangedEnemy"))
         {
-            //combat.isUsingRangedWeapon = true;
-            //combat.isUsingMagicalWeapon = false;
             kind = EnemyKind.Ranged;
             combat.ForceWeaponModeForNPC(
         ranged: true, magic: false,
-        damageType: DamageType.Physical,          // or whatever you want
-        projectilePrefab: combat.arrowPrefab,     // optional if defaults work
+        damageType: DamageType.Physical,
+        projectilePrefab: combat.arrowPrefab,
         projectileSpeed: combat.arrowSpeed,
         explosionPrefab: null,
         explosionRadius: 0f,
@@ -76,13 +69,11 @@ public class EnemyController : MonoBehaviour
         }
         else if(CompareTag("CasterEnemy"))
         {
-            //combat.isUsingRangedWeapon = false;
-            //combat.isUsingMagicalWeapon = true;
             kind = EnemyKind.Caster;
             combat.ForceWeaponModeForNPC(
         ranged: false, magic: true,
-        damageType: combat.boltDamageType,        // eg Fire/Lightning/etc.
-        projectilePrefab: combat.boltPrefab,      // if you want a specific projectile
+        damageType: combat.boltDamageType,
+        projectilePrefab: combat.boltPrefab,
         projectileSpeed: combat.boltSpeed,
         explosionPrefab: combat.boltExplosionPrefab,
         explosionRadius: combat.boltExplosionRadius,
@@ -92,8 +83,6 @@ public class EnemyController : MonoBehaviour
         }
         else
         {
-            //combat.isUsingRangedWeapon = false;
-            //combat.isUsingMagicalWeapon = false;
             kind = EnemyKind.Melee;
             combat.ForceWeaponModeForNPC(
                 ranged: false, magic: false,
@@ -102,9 +91,6 @@ public class EnemyController : MonoBehaviour
                 maxDamage: npcMaxDamage
                 );
         }
-            //combat.isUsingRangedWeapon = (kind == EnemyKind.Ranged);
-            //combat.isUsingMagicalWeapon = (kind == EnemyKind.Caster);
-
             agent.stoppingDistance = GetPreferredStopRange();
 
         // FSM wiring
@@ -122,100 +108,14 @@ public class EnemyController : MonoBehaviour
         fsm.ChangeState(new IdleState(bb, fsm));
     }
 
-    // Update is called once per frame
     void Update()
     {
-        /* IMPLEMENTATION BEFORE FSM
-        if (myStats != null && myStats.faction == Stats.Faction.Ally)
-            return;
-
-        if (!target || !myStats) return;
-
-        float distance = Vector3.Distance(target.position, transform.position);
-        if (distance > lookRadius) return;
-
-        if(requireLineOfSight && !HasLineOfSight(target, distance))
-        {
-            agent.SetDestination(target.position);
-            return;
-        }
-
-        float stopRange = GetPreferredStopRange();
-        if(distance > stopRange)
-        {
-            agent.SetDestination(target.position);
-            return;
-        }
-
-        // In range: stop, face, and try to attack
-        if (!agent.pathPending) agent.ResetPath();
-        FaceTarget();
-
-        var targetStats = target.GetComponent<Stats>();
-        if (!targetStats) return;
-
-        if(_skillCaster != null && _skillCaster.TryCastIfReady(targetStats))
-        {
-            FaceTarget();
-            return;
-        }
-        if(_skillCaster != null && _skillCaster.IsBusy)
-        {
-            FaceTarget();
-            return;
-        }
-        // Gate by AttackSpeed (attacks per second)
-        float attacksPerSecond = Mathf.Max(0.01f, myStats.attackSpeed); // ensure >0
-        float attackInterval = 1f / attacksPerSecond;
-
-        if (Time.time >= nextAttackTime)
-        {
-            nextAttackTime = Time.time + attackInterval;
-            combat.Attack(targetStats);   // CharacterCombat decides melee/ranged/magic based on flags
-        }
-        IMPLEMENTATION BEFORE FSM */
 
         if (myStats != null && myStats.faction == Stats.Faction.Ally) return;
         if(!target || !myStats) return;
         bb.RefreshSenses(requireLineOfSight, losBlockers);
         fsm.Tick();
 
-        /*
-        if (distance <= lookRadius)
-        {
-            agent.SetDestination(target.position);
-            Stats targetStats = target.GetComponent<Stats>();
-
-            if (targetStats == null) return;
-
-            if (isUsingRangedAttack)
-            {
-                if (distance <= rangedAttackRange)
-                {
-                    agent.ResetPath();
-                    FaceTarget();
-
-                    if (Time.time >= nextFireTime)
-                    {
-                        nextFireTime = Time.time + 1f / fireRate;
-                        combat.Attack(targetStats); // Let animation + Combat script handle firing
-                    }
-                }
-            }
-            else
-            {
-                if (distance <= agent.stoppingDistance)
-                {
-                    FaceTarget();
-                    combat.Attack(targetStats);
-                }
-            }
-        }
-        // Move away from Update?
-        if (myStats.gameObject.tag == "RangedEnemy")
-        {
-            combat.isUsingRangedWeapon = true;
-        }*/
     }
 
     float GetPreferredStopRange()

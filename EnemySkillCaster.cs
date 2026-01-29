@@ -8,13 +8,13 @@ using UnityEngine.AI;
 public class EnemySkillCaster : MonoBehaviour
 {
     [Header("Skill")]
-    public SkillData skill;                       // e.g. your Fireball SkillData
+    public SkillData skill;
     [Tooltip("Optional: where the projectile spawns from")]
-    public Transform castPoint;                   // if null, falls back to a sensible default
+    public Transform castPoint;
 
     [Header("Usage Conditions")]
     public float minRange = 3f;
-    public float maxRange;                  // typically match/relate to skill.castingRange
+    public float maxRange;
     public bool requireLineOfSight = true;
     public LayerMask losBlockers = ~0;
 
@@ -43,7 +43,8 @@ public class EnemySkillCaster : MonoBehaviour
     void Start()
     {
         maxRange = skill.castingRange;
-        // Cache the player once (you already do this elsewhere, this is just local convenience)
+
+        // Cache the player once
         var pm = PlayerManager.instance;
         _player = pm != null ? pm.player?.transform : null;
 
@@ -62,7 +63,7 @@ public class EnemySkillCaster : MonoBehaviour
     {
         if (skill == null || target == null) return false;
 
-        // If we’re already casting, tell caller to skip normal attacks this frame.
+        // If weï¿½re already casting, tell caller to skip normal attacks this frame.
         if (IsCasting) { FaceTarget(target.transform); return true; }
 
         // Cooldown
@@ -115,20 +116,7 @@ public class EnemySkillCaster : MonoBehaviour
         }
 
         if (_anim) _anim.SetTrigger("finishCasting");
-        /*
-        // Spend mana
-        _stats.ModifyMana(-skill.manaCost);
-
-        // Fire projectile / apply skill
-        FireSkillProjectileAt(target);
-
-        // Set cooldown
-        _nextReadyTime = Time.time + Mathf.Max(0f, skill.cooldown);
-
-        // Post-cast lockout so we dont instantly basic-attack
-        _actionLockUntil = Time.time + postCastLockout;
         
-        IsCasting = false; */
     }
     public void Anim_UseSpellSkillEvent()
     {
@@ -181,8 +169,5 @@ public class EnemySkillCaster : MonoBehaviour
             // Your projectile already knows how to apply damage/effects from SkillData
             proj.SetTarget(aimAt, _stats, skill);
         }
-
-        // Optional: self/hand VFX for enemies (if you want)
-        // if (skill.selfCastEffectPrefab) Instantiate(skill.selfCastEffectPrefab, spawnPos, Quaternion.identity, transform);
     }
 }

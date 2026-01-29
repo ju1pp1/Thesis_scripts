@@ -25,15 +25,6 @@ public class ChaseState : IEnemyState
             ? bb.controller.meleeStopRange
             : (bb.controller.kind == EnemyController.EnemyKind.Ranged ? bb.controller.rangedStopRange : bb.controller.casterStopRange);
 
-        //Implementing
-        /*if (bb.DistanceToPlayer > stopRange)
-        {
-            bb.agent.stoppingDistance = stopRange;
-            bb.agent.SetDestination(bb.player.position);
-            return;
-        }
-        if (!bb.agent.pathPending) bb.agent.ResetPath();
-        */
         if(bb.DistanceToPlayer > stopRange)
         {
             bb.agent.stoppingDistance = stopRange;

@@ -3,13 +3,6 @@ using UnityEngine;
 public static class AIEventLogger
 {
     public static string SystemTag = "BT";
-    /*
-    public static void Log(EnemyBlackboard bb, string evt)
-    {
-        //Debug.Log($"[AI] {bb.name} -> {evt} | hp%={bb.HealthPct:0.00} dist={bb.DistanceToPlayer:0.0}");
-
-
-    } */
 
     public static void Transition(EnemyBlackboard bb, string from, string to, string reason = "")
     {

@@ -17,30 +17,17 @@ public class EnemyStats : Stats
         {
             attributes[i].SetParent(this);
 
-            //BELOW SHOULD BE UPDATED CORRECTLY, UPDATE / METHOD?!!!!
             if (transform.gameObject.GetComponent<Stats>().attributes[i].type == Attributes.Health)
             {
-                //attributes[i].value.BaseValue = 40;
-
-                //currentHealth = attributes[i].value.ModifiedValue;
-                //maxHealth = attributes[i].value.BaseValue;
-                
-                //maxHealth = attributes.First(a => a.type == Attributes.Health).value.ModifiedValue;
                 currentHealth = maxHealth;
 
             }
             if (transform.gameObject.GetComponent<Stats>().attributes[i].type == Attributes.Mana)
             {
-                //attributes[i].value.BaseValue = 50;
-                //currentMana = attributes[i].value.ModifiedValue;
-                //maxMana = attributes[i].value.BaseValue;
                 currentMana = maxMana;
             }
             if (transform.gameObject.GetComponent<Stats>().attributes[i].type == Attributes.Guard)
             {
-                //attributes[i].value.BaseValue = 50;
-                //currentMana = attributes[i].value.ModifiedValue;
-                //maxMana = attributes[i].value.BaseValue;
                 currentGuard = maxGuard;
             }
             if (transform.gameObject.GetComponent<Stats>().attributes[i].type == Attributes.PhysicalDamage)
@@ -52,7 +39,6 @@ public class EnemyStats : Stats
             {
                 //attributes[i].value.BaseValue = 0;
                 //armor = transform.gameObject.GetComponent<Stats>().attributes[i].value.ModifiedValue;
-
             }
             if (transform.gameObject.GetComponent<Stats>().attributes[i].type == Attributes.AttackSpeed)
             {
@@ -73,11 +59,7 @@ public class EnemyStats : Stats
 
             }
         }
-        //OnHealthChanged?.Invoke(maxHealth, currentHealth);
-        //OnManaChanged?.Invoke(maxMana, currentMana);
-        //OnGuardChanged?.Invoke(maxGuard, currentGuard);
-        //OnDodgeChanged?.Invoke(dodge);
-        //OnAttackSpeedChanged?.Invoke(attackSpeed);
+        
         healthRegenCoroutine = StartCoroutine(RegenerateHealth());
         manaRegenCoroutine = StartCoroutine(RegenerateMana());
         guardRegenCoroutine = StartCoroutine(RegenerateGuard());

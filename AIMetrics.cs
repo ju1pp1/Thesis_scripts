@@ -23,7 +23,7 @@ public class AIMetrics : MonoBehaviour
 
     public void EnterMode(string to, string reason = "")
     {
-        modeEnters++;                 // how often BT leaf entered
+        modeEnters++;
         OnTransition(currentMode, to, reason);
     }
     public void OnTransition(string from, string to, string reason)
@@ -61,7 +61,7 @@ public class AIMetrics : MonoBehaviour
         if (action.Contains("Attack")) attacksRequested++;
         if (action.Contains("Cast") || action.Contains("Skill")) skillsCast++;
 
-        // if you treat “Enter Attack” as first attack start:
+        // if you treat ï¿½Enter Attackï¿½ as first attack start:
         if (action.Contains("Enter Attack") && firstAttackTime < 0f)
             firstAttackTime = Time.time;
     }
@@ -72,7 +72,7 @@ public class AIMetrics : MonoBehaviour
         return firstAttackTime - firstDetectedTime;
     }
 
-    // Optional: show a summary in console when object is destroyed
+    // Show a summary in console when object is destroyed
     void OnDestroy()
     {
         // close timer
