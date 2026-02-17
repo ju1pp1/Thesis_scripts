@@ -46,7 +46,7 @@ Failure
 Running
 
 👤 Author
-Jeremi Andersin
-Master’s Degree Programme in Computing Sciences
-Tampere University
+Jeremi Andersin,
+Master’s Degree Programme in Computing Sciences,
+Tampere University,
 2026
