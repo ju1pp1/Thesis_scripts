@@ -20,39 +20,38 @@ public class AIMetrics : MonoBehaviour
     private float firstAttackTime = -1f;
 
     public int modeEnters;
+    private float chaseStartTime = -1f;
+    private float totalChaseTime = 0f;
+    private int chaseCount = 0;
 
     public void EnterMode(string to, string reason = "")
     {
-        modeEnters++;
+        modeEnters++;                 // how often BT leaf entered
         OnTransition(currentMode, to, reason);
     }
     public void OnTransition(string from, string to, string reason)
     {
-        if (string.IsNullOrEmpty(to)) return;
-
-        // Don't count "transitions" to the same mode
-        if (!string.IsNullOrEmpty(currentMode) && currentMode == to)
-            return;
-
         transitions++;
 
-        // close previous mode timer
-        if (!string.IsNullOrEmpty(currentMode))
+        if (to == "Chase")
         {
-            float dt = Time.time - modeEnterTime;
-            if (!timeInMode.ContainsKey(currentMode)) timeInMode[currentMode] = 0f;
-            timeInMode[currentMode] += dt;
+            chaseStartTime = Time.time;
         }
 
-        currentMode = to;
-        modeEnterTime = Time.time;
-
-        // milestones
-        if ((to == "Chase" || to == "Attack") && firstDetectedTime < 0f)
-            firstDetectedTime = Time.time;
-
-        if (to == "Attack" && firstAttackTime < 0f)
-            firstAttackTime = Time.time;
+        if (from == "Chase")
+        {
+            if (chaseStartTime >= 0f)
+            {
+                totalChaseTime += Time.time - chaseStartTime;
+                chaseCount++;
+                chaseStartTime = -1f;
+            }
+        }
+    }
+    public float AvgChaseDuration()
+    {
+        if (chaseCount == 0) return 0f;
+        return totalChaseTime / chaseCount;
     }
 
     public void OnAction(string action, string reason)
@@ -72,9 +71,10 @@ public class AIMetrics : MonoBehaviour
         return firstAttackTime - firstDetectedTime;
     }
 
-    // Show a summary in console when object is destroyed
+    // Optional: show a summary in console when object is destroyed
     void OnDestroy()
     {
+        var bb = GetComponent<EnemyBlackboard>();
         // close timer
         if (!string.IsNullOrEmpty(currentMode))
         {
@@ -84,6 +84,18 @@ public class AIMetrics : MonoBehaviour
         }
 
         Debug.Log($"[AI-METRICS] {name} transitions={transitions} attacksRequested={attacksRequested} skillsCast={skillsCast} " +
-                  $"reactDetectToAttack={ReactionTime_DetectToAttack():0.00}s");
+          $"avgChaseDuration={AvgChaseDuration():0.00}s " +
+          $"reactDetectToAttack={ReactionTime_DetectToAttack():0.00}s");
+
+        AICsvLogger.Row(
+    AIEventLogger.SystemTag,
+    Time.time,
+    bb,
+    "metric",
+    "",
+    "",
+    "avgChaseDuration",
+    AvgChaseDuration().ToString()
+);
     }
 }

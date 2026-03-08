@@ -2,6 +2,7 @@ using UnityEngine;
 using System;
 using System.IO;
 using System.Text;
+using System.Linq;
 
 public static class AICsvLogger
 {
@@ -21,7 +22,7 @@ public static class AICsvLogger
         _path = Path.Combine(dir, $"ai_log_{_sessionId}.csv");
 
         _buffer.AppendLine(
-            "{session};{system};{npc};{npcId};{eventType};{action};{time};{hp};{dist}"
+            "{session};{system};{npc};{npcId};{eventType};{action};{time};{hp};{dist};{inLookRadius};{chaseDuration}"
             );
 
         _initialized = true;
@@ -45,6 +46,10 @@ public static class AICsvLogger
 
         var pos = bb.transform.position;
 
+        //int los = bb.HasLoS ? 1 : 0;
+        int inLookRadius = bb.InLookRadius ? 1 : 0;
+        var m = bb.GetComponent<AIMetrics>();
+        float chaseDuration = (m != null) ? m.AvgChaseDuration() : 0f;
         // Keep it CSV-safe: replace commas/newlines in free text
         static string Clean(string s)
         {
@@ -59,9 +64,13 @@ public static class AICsvLogger
             .Append(bb.GetInstanceID()).Append(';')
             .Append(eventType).Append(';')
             .Append(Clean(action)).Append(';')
+            //.Append(Clean(reason)).Append(';')
             .Append(time.ToString("0.000")).Append(';')
             .Append(bb.HealthPct.ToString("0.000")).Append(';')
             .Append(bb.DistanceToPlayer.ToString("0.00")).Append(';')
+            //.Append(los).Append(";")
+            .Append(inLookRadius).Append(';')
+            .Append(chaseDuration.ToString("0.000"))
             .AppendLine();
 
         // Periodic flush

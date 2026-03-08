@@ -32,6 +32,8 @@ public class EnemyBlackboard : MonoBehaviour
     public float DistanceToPlayer {  get; private set; }
     public bool HasLoS { get; private set; }
     public float HealthPct { get; private set; }
+    public bool InLookRadius { get; private set; }
+    public bool InChaseRadius { get; private set; }
 
     private void Awake()
     {
@@ -70,6 +72,9 @@ public class EnemyBlackboard : MonoBehaviour
         if (player == null || selfStats == null) return;
         DistanceToPlayer = Vector3.Distance(player.position, transform.position);
         HealthPct = Mathf.Approximately(selfStats.maxHealth, 0) ? 0f : (selfStats.currentHealth / (float)selfStats.maxHealth);
+
+        InLookRadius = (controller != null) && DistanceToPlayer <= controller.lookRadius;
+        InChaseRadius = DistanceToPlayer <= chaseRadius;
 
         if (requireLoS)
         {
